@@ -1,0 +1,8 @@
+# Outerbox - Outernet STB
+
+Outernetbox is a successor of the Lighthouse firmware. It combines the
+functionality of the original Lighthouse and adds STB functionality which
+allows watching satellite TV.
+
+This build is specifically for WeTek Play devices with Amlogic AM8726-MX SoC.
+

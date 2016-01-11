@@ -1,0 +1,88 @@
+menu "Firmware configuration"
+
+config BR2_OUTERBOX_SIGNATURE_FILE
+	string "Package signagure file"
+	help
+	  If the resulting .pkg file should be signed
+	  specify a path to signature file using this 
+	  option.
+
+config BR2_OUTERBOX_TMPFS_SIZE
+	string "tmpfs size (in MiB)"
+	help
+	  Because rootfs is read-only, a ramdisk 
+	  is created with specified size to allow
+	  writing to rootfs at runtime. This option
+	  sets the amount of RAM used for the ramdisk.
+
+endmenu
+
+menu "Librarian"
+	source "$BR2_EXTERNAL/package/python-librarian/Config.in"
+if BR2_PACKAGE_PYTHON_LIBRARIAN
+comment "Base framework"
+	source "$BR2_EXTERNAL/package/python-librarian-core/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-notifications/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-content/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-setup/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-auth/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-dashboard/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-menu/Config.in"
+comment "UI skins"
+	source "$BR2_EXTERNAL/package/python-librarian-ui/Config.in"
+comment "Settings plugins"
+	source "$BR2_EXTERNAL/package/python-librarian-logs/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-ondd/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-diskspace/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-netinterfaces/Config.in"
+comment "Apps"
+	source "$BR2_EXTERNAL/package/python-librarian-filemanager/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-library/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-twitter/Config.in"
+comment "Content openers"
+	source "$BR2_EXTERNAL/package/python-librarian-opener-html/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-opener-video/Config.in"
+comment "Misc"
+	source "$BR2_EXTERNAL/package/python-librarian-analytics/Config.in"
+	source "$BR2_EXTERNAL/package/python-librarian-captive/Config.in"
+endif
+comment "Monitoring and reporting"
+	source "$BR2_EXTERNAL/package/monitoring/Config.in"
+endmenu
+
+menu "ONDD"
+	source "$BR2_EXTERNAL/package/python-ondd-ipc/Config.in"
+comment "ONDD package is a placeholder. You normally do not want to enable it."
+comment "If you enable the ONDD package, you must manually download and place"
+comment "the srouce tarball into buildroot/dl."
+	source "$BR2_EXTERNAL/package/ondd/Config.in"
+endmenu
+
+menu "Dependencies"
+    source "$BR2_EXTERNAL/package/python-bitarray/Config.in"
+    source "$BR2_EXTERNAL/package/python-bottle-fdsend/Config.in"
+    source "$BR2_EXTERNAL/package/python-bottle-utils/Config.in"
+    source "$BR2_EXTERNAL/package/python-chainable-validators/Config.in"
+    source "$BR2_EXTERNAL/package/python-cssmin/Config.in"
+    source "$BR2_EXTERNAL/package/python-dateutil/Config.in"
+    source "$BR2_EXTERNAL/package/python-fsal/Config.in"
+    source "$BR2_EXTERNAL/package/python-gevent/Config.in"
+    source "$BR2_EXTERNAL/package/python-greenlet/Config.in"
+    source "$BR2_EXTERNAL/package/python-hwd/Config.in"
+    source "$BR2_EXTERNAL/package/python-outernet-metadata/Config.in"
+    source "$BR2_EXTERNAL/package/python-pbkdf2/Config.in"
+    source "$BR2_EXTERNAL/package/python-pytz/Config.in"
+    source "$BR2_EXTERNAL/package/python-scandir/Config.in"
+    source "$BR2_EXTERNAL/package/python-sqlize-pg/Config.in"
+    source "$BR2_EXTERNAL/package/python-squery-pg/Config.in"
+    source "$BR2_EXTERNAL/package/python-webassets/Config.in"
+    source "$BR2_EXTERNAL/package/python-psycopg2/Config.in"
+    source "$BR2_EXTERNAL/package/python-ua-parser/Config.in"
+    source "$BR2_EXTERNAL/package/python-user-agents/Config.in"
+    source "$BR2_EXTERNAL/package/postgresql-95/Config.in"
+endmenu
+
+menu "Firmware management"
+    source "$BR2_EXTERNAL/package/pkgtool/Config.in"
+    source "$BR2_EXTERNAL/package/pkgtool/Config.in.host"
+endmenu

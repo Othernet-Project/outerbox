@@ -1,0 +1,8 @@
+*.sw[op]
+/.buildlog
+/*.img
+/*.zip
+/*.md5
+/images
+/rootfs/output
+/mfg/output
