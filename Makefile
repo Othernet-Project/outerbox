@@ -54,9 +54,8 @@ $(CONFIG):
 help:
 	@cat HELP
 
-clean-build:
-	@-rm $(KERNEL_IMAGE)
-	@-rm $(IMAGES_DIR)/rootfs*
+clean-build: linux-dirclean
+	@-rm -rf $(IMAGES_DIR)/*
 
 clean: $(OUTPUT)
 	-rm -rf $(OUTPUT)
