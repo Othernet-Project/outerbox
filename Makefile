@@ -14,7 +14,7 @@ OUTPUT_DIR = ../$(BOARD)/output
 OUTPUT = $(BOARD)/output
 CONFIG = $(OUTPUT)/.config
 IMAGES_DIR = $(OUTPUT)/images
-KERNEL_IMAGE = $(IMAGES_DIR)/zImage
+KERNEL_IMAGE = $(IMAGES_DIR)/uImage
 TOOLS_DIR = tools
 
 EXTERNAL = .$(BOARD_DIR)
@@ -28,28 +28,6 @@ version:
 	@echo v$(VERSION)
 
 build: $(KERNEL_IMAGE)
-
-sdcard: $(SD_CARD) $(IMAGE_FILE)
-	@read -p "Press ENTER to write image to $<..."
-	@cat $(IMAGE_FILE) | dd of=$< bs=1M
-	@sync
-
-gzimage: $(IMAGE_FILE)
-	gzip $(IMAGE_FILE)
-	md5sum $(IMAGE_FILE_GZ) | sed 's|images/||' > $(IMAGE_FILE_GZ).md5
-
-zipimage: $(IMAGE_FILE)
-	zip -j $(IMAGE_FILE_ZIP) $<
-	md5sum $(IMAGE_FILE_ZIP) | sed 's|images/||' > $(IMAGE_FILE_ZIP).md5
-
-update: $(KERNEL_IMAGE)
-	zip -j $(UPDATE_ZIP) $<
-	md5sum $(UPDATE_ZIP) | sed 's|images/||' > $(UPDATE_ZIP).md5
-
-image: $(IMAGE_FILE)
-
-$(IMAGE_FILE): $(KERNEL_IMAGE)
-	@$(TOOLS_DIR)/mkimage.sh "$@" "$<"
 
 $(KERNEL_IMAGE): $(CONFIG)
 	@make -C $(BUILDROOT) O=$(OUTPUT_DIR)
