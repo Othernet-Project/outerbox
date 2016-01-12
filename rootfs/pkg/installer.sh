@@ -3,10 +3,9 @@
 INSTALLER=$1
 
 CONTENTS=$($INSTALLER --list)
-PLATFORM="outerbox"
 
 # Platform check
-if [ "$(cat /etc/platform 2> /dev/null)" != "$PLATFORM" ]; then
+if [ "$(cat /etc/platform 2> /dev/null)" != "wt200" ]; then
   echo "Incorrect platform"
   exit 1
 fi
