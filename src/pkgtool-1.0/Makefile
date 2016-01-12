@@ -1,8 +1,12 @@
 CC      = gcc
 LD      = ld
-STRIP	= strip
 CFLAGS  += -Wall -DLINUX
 LIBS	 = -lstdc++ -lcrypto
+
+TARGET_CC = $(CROSS_COMPILE)gcc
+TARGET_STRIP = $(CROSS_COMPILE)strip
+TARGET_CFLAGS += -Wall -DLINUX
+TARGET_LDFLAGS := $(LDFLAGS)
 
 DEL_FILE 	= rm -f
 
@@ -15,9 +19,9 @@ TARGETS  = pkgtool mkpkg
 first: debug
 
 debug: CFLAGS += -ggdb
-debug: HOSTCFLAGS += -ggdb
+debug: TARGET_CFLAGS += -ggdb
 release: CFLAGS += -O2
-release: HOSTCFLAGS += -O2
+release: TARGET_CFLAGS += -O2
 
 debug release: $(TARGETS)
 
@@ -31,8 +35,8 @@ pkgtool: pkgtool.cpp $(HEADERS)
 
 installer.o: installer.cpp $(HEADERS)
 	@rm -f $@
-	$(CC) $(CFLAGS) $(LDFLAGS) -o installer.bin installer.cpp -static $(LIBS)
-	$(STRIP) installer.bin
+	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) -o installer.bin installer.cpp -static $(LIBS)
+	$(TARGET_STRIP) installer.bin
 	$(LD) -r -b binary -o $@ installer.bin
 
 clean:
