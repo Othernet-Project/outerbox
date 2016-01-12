@@ -3,20 +3,20 @@ BOARD = $(B)
 BOARD_DIR = ./$(BOARD)
 VERSION := $(shell cat $(BOARD_DIR)/version)
 PLATFORM := $(shell cat $(BOARD_DIR)/platform)
-IMAGE_FILE := images/$(PLATFORM)-$(VERSION).pkg
-IMAGE_FILE_GZ = $(IMAGE_FILE).gz
-IMAGE_FILE_ZIP = $(IMAGE_FILE).zip
-IMAGE_FILE_MD5SUM = $(IMAGE_FILE).md5
-UPDATE_ZIP = images/$(PLATFORM)-update-$(VERSION).zip
+TARGET_NAME := outerbox
+TARGET_DIR := images
+TARGET_FILE_NAME=$(TARGET_NAME)-$(VERSION).pkg
+TARGET_MD5_NAME=$(TARGET_NAME)-$(VERSION).md5
+TARGET_FILE = $(TARGET_DIR)/$(TARGET_FILE_NAME)
+TARGET_MD5 = $(TARGET_DIR)/$(TARGET_MD5_NAME)
 
 BUILDROOT = ./buildroot
 OUTPUT_DIR = ../$(BOARD)/output
 OUTPUT = $(BOARD)/output
 CONFIG = $(OUTPUT)/.config
 IMAGES_DIR = $(OUTPUT)/images
-KERNEL_IMAGE = $(IMAGES_DIR)/uImage
+IMAGE_FILE := $(IMAGES_DIR)/$(PLATFORM)-$(VERSION).pkg
 TOOLS_DIR = tools
-
 EXTERNAL = .$(BOARD_DIR)
 export BR2_EXTERNAL=$(EXTERNAL)
 
@@ -27,10 +27,7 @@ default: build
 version:
 	@echo v$(VERSION)
 
-build: $(KERNEL_IMAGE)
-
-$(KERNEL_IMAGE): $(CONFIG)
-	@make -C $(BUILDROOT) O=$(OUTPUT_DIR)
+build: $(TARGET_MD5)
 
 menuconfig: $(CONFIG)
 	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) menuconfig
@@ -48,17 +45,28 @@ saveconfig: $(CONFIG)
 
 config: $(CONFIG)
 
-$(CONFIG):
-	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) buildroot_defconfig
-
-help:
-	@cat HELP
-
 clean-build: linux-dirclean
+	@-rm $(TARGET_FILE)
+	@-rm $(TARGET_MD5)
 	@-rm -rf $(IMAGES_DIR)/*
 
 clean: $(OUTPUT)
 	-rm -rf $(OUTPUT)
+
+$(TARGET_MD5): $(TARGET_FILE)
+	@cd $(TARGET_DIR); md5sum $(TARGET_FILE_NAME) > $(TARGET_MD5_NAME)
+
+$(TARGET_FILE): $(IMAGE_FILE) $(TARGET_DIR)
+	@cp $< $@
+
+$(TARGET_DIR):
+	mkdir -p $@
+
+$(IMAGE_FILE): $(CONFIG)
+	@make -C $(BUILDROOT) O=$(OUTPUT_DIR)
+
+$(CONFIG):
+	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) buildroot_defconfig
 
 .DEFAULT:
 	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) $@
