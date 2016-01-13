@@ -4,9 +4,9 @@
 #
 ################################################################################
 
-PKGTOOL_VERSION = 1.0.0
-PKGTOOL_SOURCE = pkgtool-$(PKGTOOL_VERSION).tar.gz
-PKGTOOL_SITE = https://outernet.is
+PKGTOOL_VERSION = v0.5.0
+PKGTOOL_SOURCE = $(PKGTOOL_VERSION).tar.gz
+PKGTOOL_SITE = https://github.com/Outernet-Project/tools-pkg/archive
 PKGTOOL_DEPENDENCIES = openssl
 PKGTOOL_LICENSE = GPL
 
