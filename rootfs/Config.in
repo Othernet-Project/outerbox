@@ -9,11 +9,22 @@ config BR2_OUTERBOX_SIGNATURE_FILE
 
 config BR2_OUTERBOX_TMPFS_SIZE
 	string "tmpfs size (in MiB)"
+	default 80
 	help
 	  Because rootfs is read-only, a ramdisk 
 	  is created with specified size to allow
 	  writing to rootfs at runtime. This option
 	  sets the amount of RAM used for the ramdisk.
+
+config BR2_OUTERBOX_VERSIONLESS_PKG
+	bool "Omit version in .pkg file"
+	default n
+	help
+	  By omitting the version file in the firmware
+	  package, you can prevent version checks and
+	  thus create a firmware package that always
+	  flashes, regardless of what version is 
+	  installed on the target device.
 
 endmenu
 
