@@ -24,6 +24,8 @@ export BR2_EXTERNAL=$(EXTERNAL)
 
 default: build
 
+rebuild: clean-build build
+
 version:
 	@echo v$(VERSION)
 
