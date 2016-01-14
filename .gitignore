@@ -5,4 +5,5 @@
 /*.md5
 /images
 /rootfs/output
+/rootfs/pkg/package.pem
 /mfg/output
