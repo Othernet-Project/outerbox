@@ -87,3 +87,7 @@ comment "for code that is closed-source. Do not enable them for normal builds."
 	source "$BR2_EXTERNAL/package/wptdm/Config.in"
 endmenu
 
+menu "STB"
+	source "$BR2_EXTERNAL/package/vdr/Config.in"
+	source "$BR2_EXTERNAL/package/xinelib/Config.in"
+endmenu

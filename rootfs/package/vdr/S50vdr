@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# Start the Video Disk Recorder
+#
+TERMOUT=/var/log/vdr.log
+loglevel=3
+VDRCMD="/usr/bin/vdr -l $loglevel.6 --no-kbd -d"
+
+NoloadHTPC() {
+	grep -qse nohtpc /proc/cmdline
+}
+
+start() {
+	if NoloadHTPC; then
+		logger -t vdr "Requested to not load VDR in command line"
+		/usr/bin/chvt 2
+		exit 0
+	fi
+	logger -t vdr "Starting Video Disk Recorder..."
+	touch "$TERMOUT"
+	$VDRCMD > $TERMOUT 2>&1
+	logger -t vdr "VDR started"
+}
+
+stop() {
+	logger -t vdr "VDR stopped"
+}
+
+restart() {
+          stop
+          start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?

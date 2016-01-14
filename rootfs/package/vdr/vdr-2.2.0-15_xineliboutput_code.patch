@@ -1,0 +1,48 @@
+--- a/PLUGINS/src/xineliboutput/config.c	2016-01-14 18:38:54.000000000 +0100
++++ b/PLUGINS/src/xineliboutput/config.c	2013-08-20 10:59:24.000000000 +0200
+@@ -703,9 +703,9 @@
+   ff_h264_skip_loop_filter     = FF_H264_SKIP_LOOPFILTER_auto;
+ 
+   strn0cpy(media_root_dir,    "/",            sizeof(media_root_dir));
+-  strn0cpy(browse_files_dir,  VideoDirectory, sizeof(browse_files_dir));
+-  strn0cpy(browse_music_dir,  VideoDirectory, sizeof(browse_music_dir));
+-  strn0cpy(browse_images_dir, VideoDirectory, sizeof(browse_images_dir));
++  strn0cpy(browse_files_dir,  cVideoDirectory::Name(), sizeof(browse_files_dir));
++  strn0cpy(browse_music_dir,  cVideoDirectory::Name(), sizeof(browse_music_dir));
++  strn0cpy(browse_images_dir, cVideoDirectory::Name(), sizeof(browse_images_dir));
+   show_hidden_files = 0;
+   cache_implicit_playlists = 1;
+   enable_id3_scanner = 1;
+--- a/PLUGINS/src/xineliboutput/menu.c	2016-01-14 18:38:04.000000000 +0100
++++ b/PLUGINS/src/xineliboutput/menu.c	2013-08-20 10:59:24.000000000 +0200
+@@ -220,7 +220,7 @@
+   }
+ 
+   if (m_CurrentDir[0] != '/') {
+-    m_CurrentDir = VideoDirectory;
++    m_CurrentDir = cVideoDirectory::Name();
+   }
+ 
+   // find deepest accessible directory from path
+--- a/PLUGINS/src/xineliboutput/osd.c	2016-01-14 19:02:01.000000000 +0100
++++ b/PLUGINS/src/xineliboutput/osd.c	2011-06-09 09:02:58.000000000 +0200
+@@ -535,7 +535,7 @@
+   if (IsTrueColor()) {
+ 
+     LOCK_PIXMAPS;
+-    while (cPixmapMemory *pm = RenderPixmaps()) {
++    while (cPixmapMemory *pm = (dynamic_cast <cPixmapMemory*>(RenderPixmaps()))) {
+       int w = pm->ViewPort().Width();
+       int h = pm->ViewPort().Height();
+       int d = w * sizeof(tColor);
+--- a/PLUGINS/src/xineliboutput/tools/udp_pes_scheduler.c	2016-01-14 18:39:40.000000000 +0100
++++ b/PLUGINS/src/xineliboutput/tools/udp_pes_scheduler.c	2011-06-09 09:02:58.000000000 +0200
+@@ -635,7 +635,7 @@
+ #if 1
+   /* store copy of SDP data */
+   if(m_fd_sap < 0) {
+-    cString fname = AddDirectory(VideoDirectory,
++    cString fname = AddDirectory(cVideoDirectory::Name(),
+ 				 cString::sprintf("xineliboutput@%s.sdp",
+ 						  ip));
+     FILE *fp = fopen(fname, "w");
