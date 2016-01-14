@@ -20,7 +20,7 @@ TOOLS_DIR = tools
 EXTERNAL = .$(BOARD_DIR)
 export BR2_EXTERNAL=$(EXTERNAL)
 
-.PHONY: default version build sdcard gzimage zipimage update image menuconfig linux-menuconfig busybox-menuconfig saveconfig config help clean-build clean
+.PHONY: default version build sdcard menuconfig linux-menuconfig busybox-menuconfig saveconfig config help clean-build clean
 
 default: build
 
@@ -45,10 +45,13 @@ saveconfig: $(CONFIG)
 
 config: $(CONFIG)
 
-clean-build: linux-dirclean
+clean-build:
 	@-rm $(TARGET_FILE)
 	@-rm $(TARGET_MD5)
-	@-rm -rf $(IMAGES_DIR)/*
+	@-rm -f $(IMAGES_DIR)/rootfs*
+	@-rm -rf $(IMAGES_DIR)/init*
+	@-rm -f $(IMAGES_DIR)/kernel.img
+	@-rm -f $(IMAGES_DIR)/*.pkg
 
 clean: $(OUTPUT)
 	-rm -rf $(OUTPUT)
