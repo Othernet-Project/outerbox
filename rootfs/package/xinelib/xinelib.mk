@@ -41,3 +41,4 @@ XINE_LIB_CONF_OPT = --disable-ipv6 \
   --without-xcb
 
 $(eval $(generic-package))
+
