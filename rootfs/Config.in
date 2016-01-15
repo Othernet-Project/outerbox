@@ -62,6 +62,7 @@ comment "Monitoring and reporting"
 endmenu
 
 menu "Dependencies"
+	source "$BR2_EXTERNAL/package/postgresql-95/Config.in"
 	source "$BR2_EXTERNAL/package/python-bitarray/Config.in"
 	source "$BR2_EXTERNAL/package/python-bottle-fdsend/Config.in"
 	source "$BR2_EXTERNAL/package/python-bottle-utils/Config.in"
@@ -83,7 +84,7 @@ menu "Dependencies"
 	source "$BR2_EXTERNAL/package/python-psycopg2/Config.in"
 	source "$BR2_EXTERNAL/package/python-ua-parser/Config.in"
 	source "$BR2_EXTERNAL/package/python-user-agents/Config.in"
-	source "$BR2_EXTERNAL/package/postgresql-95/Config.in"
+	source "$BR2_EXTERNAL/package/python-zippie/Config.in"
 endmenu
 
 menu "Firmware management"
