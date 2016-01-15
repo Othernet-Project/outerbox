@@ -11,7 +11,7 @@ XINELIB_INSTALL_STAGING = NO
 XINELIB_INSTALL_TARGET = YES
 XINELIB_SECTION = multimedia
 XINELIB_DESCRIPTION = Multimedia player
-XINELIB_DEPENDENCIES = ffmpeg xlib_libXv xlib_libICE xlib_libXext mesa3d alsa-lib libvdpau libbluray libmad libmodplug libvorbis
+XINELIB_DEPENDENCIES = ffmpeg xlib_libSM xlib_libXv xlib_libICE xlib_libXext mesa3d alsa-lib libvdpau libbluray libmad libmodplug libvorbis
 XINELIB_CONF_OPTS = --disable-ipv6 \
   --disable-nls \
   --disable-aalib \
