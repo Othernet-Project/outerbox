@@ -11,12 +11,8 @@ XINELIB_INSTALL_STAGING = NO
 XINELIB_INSTALL_TARGET = YES
 XINELIB_SECTION = multimedia
 XINELIB_DESCRIPTION = Multimedia player
-XINE_LIB_DEPENDENCIES = ffmpeg xlib_libXv xlib_libICE xlib_libXext mesa3d alsa-lib libvdpau libbluray libmad libmodplug libvorbis
-XINE_LIB_OPKG_DEPENDENCIES = ffmpeg,libxv,libice,libxext,mesa,alsa-lib,libvdpau,libbluray,libmad,libmodplug,libvorbis
-
-# XINE_LIB_CFLAGS=$(TARGET_CFLAGS)
-
-XINE_LIB_CONF_OPT = --disable-ipv6 \
+XINELIB_DEPENDENCIES = ffmpeg xlib_libXv xlib_libICE xlib_libXext mesa3d alsa-lib libvdpau libbluray libmad libmodplug libvorbis
+XINELIB_CONF_OPTS = --disable-ipv6 \
   --disable-nls \
   --disable-aalib \
   --disable-directfb \
@@ -40,5 +36,5 @@ XINE_LIB_CONF_OPT = --disable-ipv6 \
   --disable-gdkpixbuf \
   --without-xcb
 
-$(eval $(generic-package))
+$(eval $(autotools-package))
 
