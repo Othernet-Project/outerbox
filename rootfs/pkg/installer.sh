@@ -15,16 +15,11 @@ hasfile() {
 }
 
 suffix() {
-  sfx=$(echo "$1" | cut -d- -f2)
-  if [ "$sfx" == "$1" ]; then
-    echo "z1"
-  else
-    echo $sfx
-  fi
+  echo "$1" | egrep -o '(a|b|rc)[0-9]+'
 }
 
 mainver() {
-  echo "$1" | cut -d- -f1
+  echo "$1" | egrep -o '[1-9][0-9]*\.[0-9]+(\.[0-9]+)?'
 }
 
 normalize() {
