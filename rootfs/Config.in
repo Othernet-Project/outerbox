@@ -88,6 +88,7 @@ comment "for code that is closed-source. Do not enable them for normal builds."
 endmenu
 
 menu "STB"
+	source "$BR2_EXTERNAL/package/libvdpau/Config.in"
 	source "$BR2_EXTERNAL/package/vdr/Config.in"
 	source "$BR2_EXTERNAL/package/xinelib/Config.in"
 endmenu
