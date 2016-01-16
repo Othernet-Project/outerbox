@@ -34,7 +34,8 @@ XINELIB_CONF_OPTS = --disable-ipv6 \
   --disable-dxr3 \
   --disable-oss \
   --disable-gdkpixbuf \
-  --without-xcb
-
+  --without-xcb \
+  --with-libFLAC-libraries=$(STAGING_DIR)/usr/lib \
+  --with-libFLAC-includes=$(STAGING_DIR)/usr/include
 $(eval $(autotools-package))
 
