@@ -4,7 +4,6 @@ config BR2_PACKAGE_VDR
 	select BR2_PACKAGE_XLIB_LIBX11
 	select BR2_PACKAGE_XLIB_LIBXEXT
 	select BR2_PACKAGE_XLIB_LIBXRENDER
-	select BR2_PACKAGE_XINELIB
 	select BR2_PACKAGE_LIBCAP
 	select BR2_PACKAGE_JPEG
 	select BR2_PACKAGE_FONTCONFIG
@@ -14,8 +13,8 @@ config BR2_PACKAGE_VDR
 
 	  http://www.tvdr.de
 
-comment "vdr depends on xinelib"
-	depends on !BR2_PACKAGE_XINELIB
+comment "vdr depends on Xorg"
+	depends on !BR2_PACKAGE_XORG7
 
 if BR2_PACKAGE_VDR
 
@@ -23,10 +22,13 @@ menu "VDR plugins selection"
 
 config BR2_PACKAGE_VDR_XINELIBOUTPUT
 	bool "vdr-xineliboutput"
-	select BR2_PACKAGE_XINELIB
+	depends on BR2_PACKAGE_XINELIB
 	default n
 	help
 	  xineliboutput plugin
+
+comment "vdr-xineliboutput depends on xinelib"
+	depends on !BR2_PACKAGE_XINELIB
 
 endmenu
 

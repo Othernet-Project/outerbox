@@ -1,12 +1,11 @@
 config BR2_PACKAGE_XINELIB
 	bool "xinelib"
-	select BR2_PACKAGE_FFMPEG
+	depends on BR2_PACKAGE_HAS_LIBGL && BR2_PACKAGE_FFMPEG_POSTPROC
 	select BR2_PACKAGE_XLIB_LIBXV
 	select BR2_PACKAGE_ALSA_LIB
 	select BR2_PACKAGE_XLIB_LIBICE
 	select BR2_PACKAGE_XLIB_LIBSM
 	select BR2_PACKAGE_XLIB_LIBXEXT
-	select BR2_PACKAGE_MESA3D
 	select BR2_PACKAGE_LIBVDPAU
 	select BR2_PACKAGE_LIBBLURAY
 	select BR2_PACKAGE_FLAC
@@ -24,5 +23,5 @@ config BR2_PACKAGE_XINELIB
 
 	  https://www.xine-project.org/
 
-comment "xinelib depends on libgl, libglu"
-	depends on !BR2_PACKAGE_HAS_LIBGL || !BR2_PACKAGE_LIBGLU
+comment "xinelib depends on OpenGL backend, ffmpeg-libpostprocess"
+	depends on !BR2_PACKAGE_HAS_LIBGL || !BR2_PACKAGE_FFMPEG_POSTPROC
