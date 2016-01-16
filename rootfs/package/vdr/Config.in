@@ -14,13 +14,16 @@ config BR2_PACKAGE_VDR
 
 	  http://www.tvdr.de
 
+comment "vdr depends on xinelib"
+	depends on !BR2_PACKAGE_XINELIB
+
 if BR2_PACKAGE_VDR
 
 menu "VDR plugins selection"
 
 config BR2_PACKAGE_VDR_XINELIBOUTPUT
 	bool "vdr-xineliboutput"
-	select BR2_PACKAGE_XINE_LIB
+	select BR2_PACKAGE_XINELIB
 	default n
 	help
 	  xineliboutput plugin
