@@ -10,9 +10,11 @@ config BR2_PACKAGE_XINELIB
 	select BR2_PACKAGE_LIBVDPAU
 	select BR2_PACKAGE_LIBBLURAY
 	select BR2_PACKAGE_FLAC
+	select BR2_PACKAGE_LIBGLU
 	select BR2_PACKAGE_LIBMAD
 	select BR2_PACKAGE_LIBMODPLUG
 	select BR2_PACKAGE_LIBVORBIS
+	default n
 	help
 	  xine is a free multimedia player. It plays back CDs, DVDs, and VCDs. It
 	  also decodes multimedia files like AVI, MOV, WMV, and MP3 from local disk
@@ -21,3 +23,6 @@ config BR2_PACKAGE_XINELIB
 	  most uncommon formats, too.
 
 	  https://www.xine-project.org/
+
+comment "xinelib depends on libgl, libglu"
+	depends on !BR2_PACKAGE_HAS_LIBGL || !BR2_PACKAGE_LIBGLU
