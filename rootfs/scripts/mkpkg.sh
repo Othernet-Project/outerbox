@@ -2,11 +2,10 @@
 
 set -e
 
-# Package data
-KERNEL_VERSION=$2
-TMPFS_SIZE=$3
-SIGNATURE=$4
+# Arguments
+. ${BR2_EXTERNAL}/scripts/parse_args.sh
 
+# Package data
 PLATFORM=${BR2_EXTERNAL}/platform
 VERSION=${BR2_EXTERNAL}/version
 LIBC=${TARGET_DIR}/lib/libc.so.6
@@ -49,6 +48,7 @@ echo "tmpfs size:      ${TMPFS_SIZE} MB"
 echo "Signature file:  $SIGNATURE"
 echo "Libc version:    $LIBC_VER"
 echo "Ld version:      $LD_VER"
+echo "Versioned pkg:   $([ "$USE_VERSION" == "y" ] && echo "YES" || echo "NO")"
 echo "================================================================="
 
 # Prepare the init script
@@ -74,13 +74,24 @@ $MKIMAGE --kernel "$KERNEL_UIMAGE" --second "$DTB" --ramdisk "$INITRAMFS" \
     --output "$KERNEL_IMAGE"
 
 # Generate signed or unsigned .pkg file
+
+# FIXME: the conditional building of arguments can be fragile when using paths 
+# that incldue spaces
+
 echo ">>> Generating .pkg file"
+mkpkg_args="${INSTALLER}:run.sh $KERNEL_IMAGE $ROOTFS_IMAGE"
+
+if [ "$USE_VERSION" == "y" ]
+then
+    mkpkg_args="${VERSION} $mkpkg_args"
+fi
+
 if [ -f "$SIGNATURE" ]
 then
     read -r -s -p "Package key password: " PASSWORD && \
-    $MKPKG -o "$PKGFILE" -k "$SIGNATURE" -p "$PASSWORD" "$VERSION" \
-        ${INSTALLER}:run.sh "$KERNEL_IMAGE" "$ROOTFS_IMAGE"
-else
-    $MKPKG -o "$PKGFILE" "$VERSION" ${INSTALLER}:run.sh \
-        "$KERNEL_IMAGE" "$ROOTFS_IMAGE"
+    mkpkg_args="-k $SIGNATURE -p $PASSWORD $mkpkg_args"
 fi
+
+mkpkg_args="-o $PKGFILE $mkpkg_args"
+
+$MKPKG $mkpkg_args
