@@ -1,2 +1,3 @@
 outernet 1000 outernet 1000 =outernet /home/outernet /bin/ash sudo
 postgres 1001 postgres 1001 * - -
+vdr -1 vdr -1 =vdr /home/vdr /bin/ash
