@@ -19,7 +19,7 @@ suffix() {
 }
 
 mainver() {
-  echo "$1" | egrep -o '[1-9][0-9]*\.[0-9]+(\.[0-9]+)?'
+  echo "$1" | egrep -o '[0-9]+\.[0-9]+(\.[0-9]+)?'
 }
 
 normalize() {
@@ -51,6 +51,9 @@ normalize() {
       ;;
   esac
 
+  if [ -z $sfxnum ]; then
+    sfxnum=1
+  fi
   echo $(expr $MAJ_FAC \* $vmaj + $MIN_FAC \* $vmin + $PAT_FAC \* $vpat + $SFXMAJ_FAC \* $sfxmaj + $sfxnum)
 }
 
