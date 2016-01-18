@@ -1,0 +1,16 @@
+#!/bin/sh
+
+FEOPTS="--fullscreen"
+FEOPTS=${FEOPTS}" --reconnect"
+FEOPTS=${FEOPTS}" --post method:tvtime=use_vo_driver"
+FEOPTS=${FEOPTS}" --video=vdpau"
+FEOPTS=${FEOPTS}" --audio=alsa:hw:1,7"
+FEOPTS=${FEOPTS}" --hud"
+FEOPTS=${FEOPTS}" --nokbd"
+FEOPTS=${FEOPTS}" --silent"
+
+LOGFILE=/var/log/vdr-sxfe.log
+
+mv $LOGFILE ${LOGFILE}.old
+
+/usr/bin/vdr-sxfe $FEOPTS >& $LOGFILE
