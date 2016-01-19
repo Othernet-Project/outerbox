@@ -28,8 +28,7 @@ define VDR_XINELIBOUTPUT_EXTRACT
 	$(TAR) --strip-components=1 -C $(VDR_DIR)/PLUGINS/src/xineliboutput $(TAR_OPTIONS) -)
 endef
 
-XINELIBOUTPUT_CONFIGURE_OPTS = --disable-fb \
-  --disable-libextractor \
+XINELIBOUTPUT_CONFIGURE_OPTS = --disable-libextractor \
   --disable-dbus-glib-1 \
   --disable-xdpms \
   --disable-xinerama \

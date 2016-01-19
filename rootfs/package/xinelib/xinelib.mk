@@ -15,8 +15,6 @@ XINELIB_DEPENDENCIES = ffmpeg xlib_libSM xlib_libXv xlib_libICE xlib_libXext mes
 XINELIB_CONF_OPTS = --disable-ipv6 \
   --disable-nls \
   --disable-aalib \
-  --disable-directfb \
-  --disable-fb \
   --enable-opengl \
   --enable-glu \
   --disable-vidix \
