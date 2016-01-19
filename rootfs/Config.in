@@ -101,6 +101,11 @@ endmenu
 
 menu "STB"
 	source "$BR2_EXTERNAL/package/libvdpau/Config.in"
+	source "$BR2_EXTERNAL/package/libvdpau-va-gl/Config.in"
+	source "$BR2_EXTERNAL/package/libvdpau-sunxi/Config.in"
+	source "$BR2_EXTERNAL/package/libump2/Config.in"
+	source "$BR2_EXTERNAL/package/sunxi-mali-mesa-compatible/Config.in"
+	source "$BR2_EXTERNAL/package/xdriver_xf86-video-fbturbo-ump/Config.in"
 	source "$BR2_EXTERNAL/package/vdr/Config.in"
 	source "$BR2_EXTERNAL/package/xinelib/Config.in"
 endmenu

@@ -1,0 +1,10 @@
+config BR2_PACKAGE_LIBVDPAU_SUNXI
+	bool "libvdpau-sunxi"
+	select BR2_PACKAGE_LIBVDPAU
+	help
+	  This is an experimental VDPAU implementation for sunxi SoCs.
+
+	  It supports decoding of MPEG1 and MPEG2, some limited MPEG4 types,
+	  H.264 and on the H3 SoC it also decodes H.265.
+
+	  https://github.com/linux-sunxi/libvdpau-sunxi
