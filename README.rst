@@ -14,7 +14,7 @@ build the Lighthouse images.
 License
 =======
 
-The complete code for the build system is released under GPLv3. See the COPYING
+The complete code for the build system is released under GPLv2. See the COPYING
 file in the source tree for more information.
 
 The ONDD binary located in the ``rootfs/rootfs_overlay/usr/sbin`` directory is
