@@ -8,6 +8,7 @@ import syslog
 from contextlib import contextmanager
 from subprocess import call
 
+from fsal.client import FSAL
 from ondd_ipc.ipc import ONDDClient
 
 import led
@@ -20,6 +21,7 @@ MV = '/bin/mv'
 RM = '/bin/rm'
 LOCALE = 'en_US.UTF-8'
 ONDD_SOCKET_PATH = '/var/run/ondd.ctrl'
+FSAL_SOCKET_PATH = '/var/run/fsal.ctrl'
 
 # Filesystems and mounting
 MOUNT_BASE = '/mnt'
@@ -201,10 +203,15 @@ def is_using_ext():
 
 
 def switch_storage(path):
-    client = ONDDClient(ONDD_SOCKET_PATH)
-    response = client.set_output_path(path)
+    log_dbg('Switching ONDD output to {}'.format(path))
+    ondd_client = ONDDClient(ONDD_SOCKET_PATH)
+    response = ondd_client.set_output_path(path)
     if response != '204':
         raise RuntimeError('Could not switch output path')
+    log_dbg('Refreshing FSAL index')
+    fsal_client = FSAL(FSAL_SOCKET_PATH)
+    fsal_client.refresh()
+    log_dbg('Finished switching storage device')
 
 
 def use_ext(devname, mdir, fs):
