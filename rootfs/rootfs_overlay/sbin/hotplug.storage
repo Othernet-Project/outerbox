@@ -25,7 +25,6 @@ FSAL_SOCKET_PATH = '/var/run/fsal.ctrl'
 
 # Filesystems and mounting
 MOUNT_BASE = '/mnt'
-EXT_LABEL = 'ext_store'
 MAIN_STORAGE = '{}/data/downloads'.format(MOUNT_BASE)
 EXT_STORAGE = '{}/external'.format(MOUNT_BASE)
 CHECK_PROGS = {
@@ -98,12 +97,6 @@ def get_mount_opts(fs, extra_opts=None):
 
 def get_upgrade_path(mdir):
     return os.path.join(mdir, get_platform() + UPGRADE_FILE_EXT)
-
-
-def is_ext_storage(label):
-    if not label:
-        return False
-    return label.lower() == EXT_LABEL
 
 
 def is_upgrade(mdir):
@@ -295,23 +288,21 @@ def handle_storage(devname, label, fs, l):
 
     log_info('{} mounted at {}'.format(devname, mdir))
 
-    # Test for various handling options
+    # There are two ways a storage device can be used. One is for firmware
+    # upgrade. If there is a .pkg file on the device, then the firmware upgrade
+    # is performed. If there are no .pkg files on the device, then it is used
+    # as external storage.
 
     if is_upgrade(mdir):
         log_dbg('Processing system upgrade')
         l.blink(PROGRESS_BLINK_INTERVAL)
         time.sleep(3)
         do_upgrade(mdir)
-        return
-
-    if is_ext_storage(label):
+    else:
         log_dbg('Processing external storage')
         l.blink(PROGRESS_BLINK_INTERVAL)
         time.sleep(3)
         use_ext(devname, mdir, fs)
-    else:
-        log_dbg('{} unused, unmounting'.format(devname))
-        mount.umount(devname)
 
 
 def handle_storage_removal(dev, label, l):
