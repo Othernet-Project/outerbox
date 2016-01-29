@@ -2,8 +2,8 @@
 
 import os
 import sys
+import glob
 import time
-import shutil
 import syslog
 from contextlib import contextmanager
 from subprocess import call
@@ -38,10 +38,6 @@ MOUNT_OPTS = {
     'ntfs': 'windows_names,fmask=133,dmask=022,recover',
     'vfat': 'utf8',
 }
-
-# Platform
-PLATFORM = '/etc/platform'
-EXT_PLATFORM_FILE = '.platform'
 
 # Upgrade
 UPGRADE_FILE_EXT = '.pkg'
@@ -96,64 +92,11 @@ def get_mount_opts(fs, extra_opts=None):
 
 
 def get_upgrade_path(mdir):
-    return os.path.join(mdir, get_platform() + UPGRADE_FILE_EXT)
-
-
-def is_upgrade(mdir):
-    upgrade_path = get_upgrade_path(mdir)
-    return os.path.isfile(upgrade_path)
-
-
-def get_platform():
-    with open(PLATFORM, 'r') as f:
-        platform = f.read()
-    return platform.strip()
-
-
-def get_ext_platform(mdir):
-    platform_file = os.path.join(mdir, EXT_PLATFORM_FILE)
-    if not os.path.exists(platform_file):
-        return ''
-    with open(platform_file, 'r') as f:
-        platform = f.read()
-    return platform.strip()
-
-
-def set_ext_platform(mdir):
-    platform_file = os.path.join(mdir, EXT_PLATFORM_FILE)
-    log_dbg('Writing platform file to external storage')
-    with open(platform_file, 'w') as f:
-        f.write(get_platform())
-
-
-def relocate_data(mdir):
-    for (src, dst) in MIGRATE:
-        src_path = os.path.join(mdir, src)
-        dst_path = os.path.join(mdir, dst)
-        if os.path.exists(src_path):
-            log_dbg('Copying {} into {}'.format(src_path, dst_path))
-            call([RM, dst_path])
-            call([MV, src_path, dst_path])
-        else:
-            log_dbg('Nothing to import in {}'.format(src_path))
-
-
-def delete_obsolete(mdir):
-    for item in CLEANUP:
-        path = os.path.join(mdir, item)
-        if os.path.exists(path):
-            log_dbg('Deleting {}'.format(path))
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.unlink(path)
-
-
-def migrate_structure(mdir):
-    # move data that needs to be migrated to the specified locations
-    relocate_data(mdir)
-    # delete obsolete data
-    delete_obsolete(mdir)
+    # Get all .pkg files
+    pkgs = glob.glob(os.path.join(mdir, 'outernet-rx*.pkg'))
+    if not len(pkgs):
+        return None
+    return list(sorted(pkgs))[-1]
 
 
 def mpath(devname):
@@ -187,14 +130,6 @@ def led_indication(devname):
         l.on()
 
 
-def is_using_ext():
-    """
-    Whether we are already using external storage.
-    """
-    platform_file = os.path.join(EXT_STORAGE, EXT_PLATFORM_FILE)
-    return os.path.isfile(platform_file)
-
-
 def switch_storage(path):
     log_dbg('Switching ONDD output to {}'.format(path))
     ondd_client = ONDDClient(ONDD_SOCKET_PATH)
@@ -208,44 +143,6 @@ def switch_storage(path):
 
 
 def use_ext(devname, mdir, fs):
-    if is_using_ext():
-        # We are already using one storage device as external storage. We can't
-        # have more than one, sorry.
-        log_info('Already using external storage. Nothing to do.')
-        return
-
-    # External storage can be blank (never used) or contain a platform file
-    # that tells us it's been used before. Blank storage does not have the
-    # EXT_PLATFORM_FILE file on it.
-
-    this_platform = get_platform()
-    ext_platform = get_ext_platform(mdir)
-    first_use = ext_platform == ''
-
-    log_dbg('External storage platform is: {}'.format(
-        ext_platform or '(none)'))
-
-    if (not first_use) and (ext_platform != this_platform):
-        # This device has been used before, but on another system. We
-        # can't use it here.
-        log_err('This storage has been used on another platform {}. Nothing '
-                'to do.'.format(ext_platform))
-        return
-
-    log_dbg('Preparing for external storage use')
-
-    if first_use:
-        # This external storage needs to be marked
-        log_dbg('Initializing external storage')
-        set_ext_platform(mdir)
-        log_dbg('Migrating old directory structure')
-        try:
-            migrate_structure(mdir)
-        except Exception as exc:
-            log_err('Migration failure: {0}'.format(str(exc)))
-        else:
-            log_dbg('Migration finished successfully.')
-
     # Set up the external storage
     log_info('Using {} as external storage'.format(devname))
 
@@ -266,8 +163,7 @@ def use_ext(devname, mdir, fs):
         log_err('Failed to switch storage path')
 
 
-def do_upgrade(mdir):
-    upgrade_path = get_upgrade_path(mdir)
+def do_upgrade(upgrade_path):
     log_dbg('Executing system upgrade file {}'.format(upgrade_path))
     cmd = [UPGRADE_EXEC, '-i', upgrade_path]
     if call(cmd) != 0:
@@ -293,11 +189,13 @@ def handle_storage(devname, label, fs, l):
     # is performed. If there are no .pkg files on the device, then it is used
     # as external storage.
 
-    if is_upgrade(mdir):
+    pkg_file = get_upgrade_path(mdir)
+
+    if pkg_file:
         log_dbg('Processing system upgrade')
         l.blink(PROGRESS_BLINK_INTERVAL)
         time.sleep(3)
-        do_upgrade(mdir)
+        do_upgrade(pkg_file)
     else:
         log_dbg('Processing external storage')
         l.blink(PROGRESS_BLINK_INTERVAL)
