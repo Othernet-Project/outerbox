@@ -48,16 +48,6 @@ LED_CLASS = 'status'
 START_BLINK_INTERVAL = 500
 PROGRESS_BLINK_INTERVAL = 100
 
-# Directory Structure Migration
-MIGRATE = (
-    ('librarian/zipballs', 'legacy'),
-    ('downloads/files', ''),
-)
-CLEANUP = (
-    'librarian',
-    'downloads',
-)
-
 
 def log_err(msg):
     syslog.syslog(syslog.LOG_ERR, msg)
@@ -170,7 +160,7 @@ def do_upgrade(upgrade_path):
         raise RuntimeError('Firmware upgrade unsuccessful')
 
 
-def handle_storage(devname, label, fs, l):
+def handle_storage(devname, fs, l):
     # First mount the partition
     mdir = get_mountpoint(devname)
     if not mdir:
@@ -203,7 +193,7 @@ def handle_storage(devname, label, fs, l):
         use_ext(devname, mdir, fs)
 
 
-def handle_storage_removal(dev, label, l):
+def handle_storage_removal(dev, l):
     mdir = get_mountpoint(dev)
     if mdir == EXT_STORAGE:
         log_dbg('Switching storage to internal storage')
@@ -213,8 +203,7 @@ def handle_storage_removal(dev, label, l):
             log_err('Failed to switch output path')
     log_dbg('Unmounting {}'.format(mdir))
     if mount.umount(mdir, force=True) != 0:
-        log_err('Failed to unmount {} ({})'.format(
-            dev, label or 'no label'))
+        log_err('Failed to unmount {}'.format(dev))
 
 
 def main():
@@ -230,16 +219,15 @@ def main():
 
     syslog.openlog('hotplug.{}'.format(devname.split('/')[-1]))
 
-    label = os.environ.get('ID_FS_LABEL')
     fs = os.environ.get('ID_FS_TYPE')
     action = os.environ.get('ACTION')
 
     # Obtain device object and pass it to handler
     with led_indication(devname) as l:
         if action == 'add':
-            handle_storage(devname, label, fs, l)
+            handle_storage(devname, fs, l)
         else:
-            handle_storage_removal(devname, label, l)
+            handle_storage_removal(devname, l)
 
 
 if __name__ == '__main__':
