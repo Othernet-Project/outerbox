@@ -15,7 +15,7 @@ LIGHTTPD_CUSTOM_CONF_OPTS = \
 	--libdir=/usr/lib/lighttpd \
 	--libexecdir=/usr/lib
 
-MOD_MULTIALIAS_VERSION = 143df71cd4c3242faed914ddd5f63a2cb3b5fe18
+MOD_MULTIALIAS_VERSION = 6fb62ee4e5915cc866b404280ee8e0467a21e209
 MOD_MULTIALIAS_SOURCE = $(MOD_MULTIALIAS_VERSION).tar.gz
 MOD_MULTIALIAS_SITE = https://github.com/Outernet-Project/lighttpd-mod-multialias/archive
 MOD_MULTIALIAS_URL = $(MOD_MULTIALIAS_SITE)/$(MOD_MULTIALIAS_SOURCE)
