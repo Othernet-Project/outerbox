@@ -1,0 +1,70 @@
+#!/busybox sh
+
+# The SD card will contain the kernel image with initramfs (boot.img) and the
+# rootfs image (rootfs.cramfs). In order to mount the rootfs, the kernel is
+# booted with this init script first, and the init script performs the mounting
+# and switching.
+#
+# Since the rootfs image is on the SD card initially, we first need to mount
+# the SD card itself. After SD card is mounted, the rootfs image is mounted.
+# Since rootfs is read-only, we must also mount the tmpfs and make a unionfs
+# mount that creates a writable overlay over the read-only rootfs using the
+# tmpfs.
+#
+# When all filesystems are mounted, we move the mount points to appropriate
+# locations within the new rootfs, and perform switch_root to make the new
+# rootfs active. The init script from the new rootfs is then executed.
+
+MOUNT="/busybox mount"
+MOVE="$MOUNT --move"
+MKDIR="/busybox mkdir"
+LOSETUP="/busybox losetup"
+SWITCH_ROOT="/busybox switch_root"
+SH="/busybox sh"
+SLEEP="/busybox sleep"
+
+# Mount devtmpfs for nodes
+$MOUNT -t devtmpfs devtmpfs /dev
+
+# Setup console
+exec 0</dev/console
+exec 1>/dev/console
+exec 2>/dev/console
+
+echo "========================================================================"
+echo "Initramfs booting..."
+echo "========================================================================"
+
+$MKDIR -p /rootfs /tmpfs /root /sdcard
+
+# Wait for SDCARD device to appear
+while ! [ -e /dev/mmcblk0p1 ]
+do
+    $SLEEP 3s
+done
+
+# Mount the SD card
+$MOUNT -t vfat -o utf8,uid=1000 /dev/mmcblk0p1 /sdcard
+
+# Mount the cramfs volume
+$LOSETUP /dev/loop0 /sdcard/rootfs.cramfs
+$MOUNT -t cramfs /dev/loop0 /rootfs
+
+# Create a tmpfs to hold transient data
+$MOUNT -t tmpfs -o size=%TMPFS_SIZE%m tmpfs /tmpfs
+
+# Create a unionfs mount
+$MOUNT -t unionfs -o dirs=/tmpfs=rw:/rootfs=ro unionfs /root
+
+# Move mount points to new root
+$MKDIR /root/mnt/tmpfs /root/mnt/rootfs /root/mnt/sdcard
+$MOVE /dev /root/dev
+$MOVE /tmpfs /root/mnt/tmpfs
+$MOVE /rootfs /root/mnt/rootfs
+$MOVE /rootfs /root/mnt/sdcard
+
+# Switch to new root
+exec $SWITCH_ROOT /root /sbin/init
+
+# If the switch root failed, drop to a shell
+exec $SH

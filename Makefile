@@ -1,26 +1,32 @@
 B := rootfs
-BOARD = $(B)
+
+include $(B).mk
+
+# Board-agnostic settings
+BUILDROOT = ./buildroot
+CONFIG = $(OUTPUT)/.config
 BOARD_DIR = ./$(BOARD)
 VERSION := $(shell cat $(BOARD_DIR)/version)
 PLATFORM := $(shell cat $(BOARD_DIR)/platform)
-TARGET_NAME := outernet-rx
-TARGET_DIR := images
-TARGET_FILE_NAME=$(TARGET_NAME)-$(VERSION).pkg
+
+# Build target
+TARGET_FILE_NAME=$(TARGET_NAME)-$(VERSION).$(TARGET_EXT)
 TARGET_MD5_NAME=$(TARGET_NAME)-$(VERSION).md5
 TARGET_FILE = $(TARGET_DIR)/$(TARGET_FILE_NAME)
 TARGET_MD5 = $(TARGET_DIR)/$(TARGET_MD5_NAME)
 
-BUILDROOT = ./buildroot
-OUTPUT_DIR = ../$(BOARD)/output
+# Build output files
 OUTPUT = $(BOARD)/output
-CONFIG = $(OUTPUT)/.config
+OUTPUT_DIR = ../$(BOARD)/output
 IMAGES_DIR = $(OUTPUT)/images
-IMAGE_FILE := $(IMAGES_DIR)/$(PLATFORM)-$(VERSION).pkg
-TOOLS_DIR = tools
+IMAGE_FILE := $(IMAGES_DIR)/$(PLATFORM)-$(VERSION).$(TARGET_EXT)
+
+# External dir
 EXTERNAL = .$(BOARD_DIR)
 export BR2_EXTERNAL=$(EXTERNAL)
 
-.PHONY: default version build sdcard menuconfig linux-menuconfig busybox-menuconfig saveconfig config help clean-build clean
+.PHONY: default version build sdcard menuconfig linux-menuconfig \
+	busybox-menuconfig saveconfig config help clean-build clean
 
 default: build
 
@@ -52,17 +58,17 @@ clean-build:
 	@-rm $(TARGET_MD5)
 	@-rm -f $(IMAGES_DIR)/rootfs*
 	@-rm -rf $(IMAGES_DIR)/init*
-	@-rm -f $(IMAGES_DIR)/kernel.img
-	@-rm -f $(IMAGES_DIR)/*.pkg
+	@-rm -f $(IMAGES_DIR)/*.img
+	@-rm -f $(IMAGES_DIR)/*.$(TARGET_EXT)
 
 clean: $(OUTPUT)
 	-rm -rf $(OUTPUT)
 
 $(TARGET_MD5): $(TARGET_FILE)
-	@cd $(TARGET_DIR); md5sum $(TARGET_FILE_NAME) > $(TARGET_MD5_NAME)
+	cd $(TARGET_DIR); md5sum $(TARGET_FILE_NAME) > $(TARGET_MD5_NAME)
 
 $(TARGET_FILE): $(IMAGE_FILE) $(TARGET_DIR)
-	@cp $< $@
+	cp $< $@
 
 $(TARGET_DIR):
 	mkdir -p $@
@@ -71,7 +77,7 @@ $(IMAGE_FILE): $(CONFIG)
 	@make -C $(BUILDROOT) O=$(OUTPUT_DIR)
 
 $(CONFIG):
-	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) buildroot_defconfig
+	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) $(DEFCONFIG)
 
 .DEFAULT:
 	@make -C $(BUILDROOT) O=$(OUTPUT_DIR) $@
