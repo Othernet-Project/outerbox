@@ -1,7 +1,7 @@
 #!/busybox sh
 
 # The SD card will contain the kernel image with initramfs (boot.img) and the
-# rootfs image (rootfs.cramfs). In order to mount the rootfs, the kernel is
+# rootfs image (rootfs.squashfs). In order to mount the rootfs, the kernel is
 # booted with this init script first, and the init script performs the mounting
 # and switching.
 #
@@ -16,12 +16,19 @@
 # rootfs active. The init script from the new rootfs is then executed.
 
 MOUNT="/busybox mount"
+MV="/busybox mv"
 MOVE="$MOUNT --move"
 MKDIR="/busybox mkdir"
 LOSETUP="/busybox losetup"
 SWITCH_ROOT="/busybox switch_root"
 SH="/busybox sh"
 SLEEP="/busybox sleep"
+
+BOOTLOG="/bootlog.txt"
+
+log() {
+    echo "$1" >> $BOOTLOG
+}
 
 # Mount devtmpfs for nodes
 $MOUNT -t devtmpfs devtmpfs /dev
@@ -35,36 +42,43 @@ echo "========================================================================"
 echo "Initramfs booting..."
 echo "========================================================================"
 
+log "Setting up mount points"
 $MKDIR -p /rootfs /tmpfs /root /sdcard
 
 # Wait for SDCARD device to appear
+log "Waiting for SD card"
 while ! [ -e /dev/mmcblk0p1 ]
 do
     $SLEEP 3s
 done
 
-# Mount the SD card
-$MOUNT -t vfat -o utf8,uid=1000 /dev/mmcblk0p1 /sdcard
+log "Mounting SD card"
+$MOUNT -t vfat -o utf8,uid=1000 /dev/mmcblk0p1 /sdcard >> $BOOTLOG 2>&1
 
-# Mount the cramfs volume
-$LOSETUP /dev/loop0 /sdcard/rootfs.cramfs
-$MOUNT -t cramfs /dev/loop0 /rootfs
+# Move bootlog to SD card
+$MV /bootlog.txt /sdcard/bootlog.txt
+BOOTLOG="/sdcard/bootlog.txt"
 
-# Create a tmpfs to hold transient data
-$MOUNT -t tmpfs -o size=%TMPFS_SIZE%m tmpfs /tmpfs
+log "Setting up loop device"
+$LOSETUP /dev/loop0 /sdcard/rootfs.squashfs >> $BOOTLOG 2>&1
+log "Mounting rootfs image"
+$MOUNT -t squashfs /dev/loop0 /rootfs >> $BOOTLOG 2>&1
 
-# Create a unionfs mount
-$MOUNT -t unionfs -o dirs=/tmpfs=rw:/rootfs=ro unionfs /root
+log "Mounting tmpfs"
+$MOUNT -t tmpfs -o size=%TMPFS_SIZE%m tmpfs /tmpfs >> $BOOTLOG 2>&1
 
-# Move mount points to new root
+log "Creating unionfs for new rootfs"
+$MOUNT -t unionfs -o dirs=/tmpfs=rw:/rootfs=ro unionfs /root >> $BOOTLOG 2>&1
+
+log "Moving mount points"
 $MKDIR /root/mnt/tmpfs /root/mnt/rootfs /root/mnt/sdcard
 $MOVE /dev /root/dev
 $MOVE /tmpfs /root/mnt/tmpfs
 $MOVE /rootfs /root/mnt/rootfs
 $MOVE /rootfs /root/mnt/sdcard
 
-# Switch to new root
+log "Switching root"
 exec $SWITCH_ROOT /root /sbin/init
 
-# If the switch root failed, drop to a shell
+log "Failed to switch root. Dropping to shell"
 exec $SH

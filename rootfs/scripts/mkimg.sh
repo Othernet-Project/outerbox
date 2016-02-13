@@ -25,7 +25,7 @@ INIT_OUT=${INIT_DIR}/init-boot
 INIT_LIST_OUT=${INIT_DIR}/init-boot.ramfs
 INITRAMFS=${BINARIES_DIR}/initramfs-boot.cpio.gz
 KERNEL_IMAGE=${BINARIES_DIR}/boot.img
-ROOTFS_IMAGE=${BINARIES_DIR}/rootfs.cramfs
+ROOTFS_IMAGE=${BINARIES_DIR}/rootfs.squashfs
 
 # Kernel
 KERNEL_UIMAGE=${BINARIES_DIR}/uImage
