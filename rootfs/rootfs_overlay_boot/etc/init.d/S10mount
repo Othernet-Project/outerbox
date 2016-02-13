@@ -22,7 +22,7 @@ mkdatavol() {
 }
 
 mount_start() {
-  if ! ismounted /mnt; then
+  if ! ismounted /mnt/sdcard; then
     /bin/mkdir -p /mnt/sdcard
     /bin/mount /dev/mmcblk0p1 /mnt/sdcard
   fi
@@ -36,18 +36,17 @@ mount_start() {
   fi
 
   if ! ismounted /mnt/persist; then
-    /sbin/losetup /dev/loop0 /mnt/sdcard/persist.img
-    /bin/mount -t ext4 /dev/loop0 /mnt/persist
+    /sbin/losetup /dev/loop1 /mnt/sdcard/persist.img
+    /bin/mount -t ext4 /dev/loop1 /mnt/persist
   fi
 
   # Mount the data volume
   if ! ismounted /mnt/data ; then
-    /sbin/losetup /dev/loop1 /mnt/sdcard/data.img
-    /bin/mount -t ext4 /dev/loop0 /mnt/data
+    /sbin/losetup /dev/loop2 /mnt/sdcard/data.img
+    /bin/mount -t ext4 /dev/loop2 /mnt/data
   fi
 
   # Create directories
-  /bin/mkdir -p /mnt/data/downloads
   /bin/mkdir -p /mnt/data/librarian
   /bin/mkdir -p /mnt/data/fsal
   /bin/mkdir -p /mnt/data/log
