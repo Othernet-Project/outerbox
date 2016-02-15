@@ -8,6 +8,13 @@ PERSISTENT="/etc/shadow
 /etc/dnsmasq.conf
 /etc/sudoers"
 
+
+relpath() {
+    path=$1
+    par=$2
+    echo ${path##$par/}
+}
+
 persist() {
     for path in $PERSISTENT
     do
