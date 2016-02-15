@@ -4,7 +4,6 @@
 /*.zip
 /*.md5
 /images
-/rootfs/output
 /rootfs/pkg/package.pem
 /rootfs/pkg/reset_token
-/mfg/output
+/build
