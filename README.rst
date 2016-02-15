@@ -57,6 +57,26 @@ The image file in .pkg format will be available in ``images`` directory when
 the build is finished. Note that this file is not signed. Outernet will **not**
 provide the signing keys to 3rd parties.
 
+Build targets
+=============
+
+This repository contains two build targets:
+
+- rootfs
+- sdboot
+
+These targets result in the exact same userspace, but support different boot
+methods. The ``rootfs`` target creates a boot image that is suitable for
+flashing Lighthouse devices. The ``sdboot`` target creates files used to make
+live SD cards for booting on Lighthouse and the `Wetek Play
+<https://wetek.com/product/wetek-play>`_ STB.
+
+The build target can be specified using the ``B`` variable::
+
+    $ make B=<target name>
+
+Default target is ``rootfs``.
+
 Rebuilding after changes to rootfs overlay
 ==========================================
 
