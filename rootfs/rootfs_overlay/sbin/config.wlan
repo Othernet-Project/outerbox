@@ -1,17 +1,7 @@
 #!/bin/sh
 
-[ "$1" == "start" ] || exit 0
-
-echo "Loading modules..."
-
-if ! lsmod | grep wetekdvb > /dev/null ; then
-  /sbin/insmod /lib/modules/wetekdvb.ko
-fi
-
-echo "Configuring wifi module..."
-
 # This enables AP mode (mode 2) for dhd module which is used by the built-in 
 # WiFi adapter on Lighthouse. Apparently, hostapd is not able to do this on 
 # its own, so we need to execute this script just before we bring up the 
 # interface. It shouldn't have any side-effects for non-dhd devices.
-echo 2 > /sys/module/dhd/parameters/op_mode
+echo "2" > /sys/module/dhd/parameters/op_mode
