@@ -6,6 +6,8 @@ PERSISTENT="/etc/shadow
 /etc/profile
 /etc/hostapd.conf
 /etc/dnsmasq.conf
+/etc/dropbear
+/etc/network
 /etc/sudoers"
 
 
@@ -18,6 +20,10 @@ relpath() {
 persist() {
     for path in $PERSISTENT
     do
+        if ! [ -e "$path" ]
+        then
+            continue
+        fi
         relp=$(relpath "$path" /etc)
         target="$CONF_DIR/$relp"
         target_dir=$(dirname "$target")
