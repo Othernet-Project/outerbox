@@ -19,6 +19,7 @@ PKGDIR=${BR2_EXTERNAL}/pkg
 INIT=${PKGDIR}/init.in
 INIT_LIST=${PKGDIR}/init.ramfs.in
 INSTALLER=${PKGDIR}/installer.sh
+PRE_INSTALL=${PKGDIR}/pre-install.sh
 
 # Output files
 KERNEL_UIMAGE=${BINARIES_DIR}/uImage
@@ -81,7 +82,7 @@ $MKIMAGE --kernel "$KERNEL_UIMAGE" --second "$DTB" --ramdisk "$INITRAMFS" \
 # that incldue spaces
 
 echo ">>> Generating .pkg file"
-mkpkg_args="${INSTALLER}:run.sh $KERNEL_IMAGE $ROOTFS_IMAGE"
+mkpkg_args="${INSTALLER}:run.sh ${PRE_INSTALL}:pre-install.sh $KERNEL_IMAGE $ROOTFS_IMAGE"
 
 if [ "$USE_VERSION" == "y" ]
 then
