@@ -19,4 +19,5 @@ if [ -e $PERSIST/dropbear.rsa ]; then
 fi
 
 backup $SYSCONF/dnsmasq.conf
+backup $SYSCONF/hostapd.conf
 backup $PERSIST/config.xml
