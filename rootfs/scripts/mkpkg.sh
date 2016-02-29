@@ -6,7 +6,6 @@ set -e
 . ${BR2_EXTERNAL}/scripts/parse_args.sh
 
 # Package data
-PLATFORM=${BR2_EXTERNAL}/platform
 VERSION=${BR2_EXTERNAL}/version
 LIBC=${TARGET_DIR}/lib/libc.so.6
 LD=${TARGET_DIR}/lib/ld-linux*.so.3
@@ -27,7 +26,7 @@ DTB=${BINARIES_DIR}/wetek_play.dtb
 KERNEL_IMAGE=${BINARIES_DIR}/kernel.img
 INITRAMFS=${BINARIES_DIR}/initramfs.cpio.gz
 ROOTFS_IMAGE=${BINARIES_DIR}/rootfs.ubifs
-PKGFILE=${BINARIES_DIR}/$(cat $PLATFORM)-$(cat $VERSION).pkg
+PKGFILE=${BINARIES_DIR}/${PLATFORM}-$(cat $VERSION).pkg
 INIT_DIR=${BINARIES_DIR}/init
 INIT_OUT=${INIT_DIR}/init
 INIT_LIST_OUT=${INIT_DIR}/init.ramfs
