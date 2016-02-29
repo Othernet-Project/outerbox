@@ -7,7 +7,7 @@ BUILDROOT = ./buildroot
 CONFIG = $(OUTPUT)/.config
 BOARD_DIR = ./$(BOARD)
 VERSION := $(shell cat $(BOARD_DIR)/version)
-PLATFORM := $(shell cat $(BOARD_DIR)/platform)
+PLATFORM := $(shell cat $(BOARD_DIR)/platform_$(B))
 
 # Build target
 TARGET_FILE_NAME=$(TARGET_NAME)-$(VERSION).$(TARGET_EXT)
@@ -23,7 +23,10 @@ IMAGE_FILE := $(IMAGES_DIR)/$(PLATFORM)-$(VERSION).$(TARGET_EXT)
 
 # External dir
 EXTERNAL = .$(BOARD_DIR)
+
+# Global vars
 export BR2_EXTERNAL=$(EXTERNAL)
+export PLATFORM=$(PLATFORM)
 
 .PHONY: default version build sdcard menuconfig linux-menuconfig \
 	busybox-menuconfig saveconfig config help clean-build clean
