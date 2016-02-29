@@ -26,7 +26,7 @@ EXTERNAL = .$(BOARD_DIR)
 
 # Global vars
 export BR2_EXTERNAL=$(EXTERNAL)
-export PLATFORM=$(PLATFORM)
+export PLATFORM
 
 .PHONY: default version build sdcard menuconfig linux-menuconfig \
 	busybox-menuconfig saveconfig config help clean-build clean
