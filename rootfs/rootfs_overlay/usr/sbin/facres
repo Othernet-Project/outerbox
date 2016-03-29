@@ -2,7 +2,7 @@
 
 DATA=/mnt/data
 PERS=/mnt/persist
-INIT=/etc/init.d/
+SERVICE=/usr/sbin/service
 
 if [ $(id -u) != "0" ]
 then
@@ -24,10 +24,10 @@ then
     exit
 fi
 
-$INIT/S91librarian stop
-$INIT/S91monitoring stop
-$INIT/S90fsal stop
-$INIT/S80ondd stop
+$SERVICE librarian stop
+$SERVICE monitoring stop
+$SERVICE fsal stop
+$SERVICE ondd stop
 
 echo -n "Removing data: "
 rm -rf $DATA/*
