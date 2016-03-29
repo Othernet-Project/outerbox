@@ -1,6 +1,0 @@
-config BR2_PACKAGE_HOST_PKGTOOL
-	bool "host pkgtool"
-	help
-	  Firmware packaging and installation tool
-	  
-	  http://outernet.is/
