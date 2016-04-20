@@ -6,7 +6,6 @@ set -e
 . ${BR2_EXTERNAL}/scripts/parse_args.sh
 
 # Package data
-PLATFORM=${BR2_EXTERNAL}/platform
 VERSION=${BR2_EXTERNAL}/version
 LIBC=${TARGET_DIR}/lib/libc.so.6
 LD=${TARGET_DIR}/lib/ld-linux*.so.3
@@ -32,7 +31,7 @@ KERNEL_UIMAGE=${BINARIES_DIR}/uImage
 DTB=${BINARIES_DIR}/wetek_play.dtb
 
 # Output files
-ZIPFILE=${BINARIES_DIR}/$(cat $PLATFORM)-$(cat $VERSION).zip
+ZIPFILE=${BINARIES_DIR}/${PLATFORM}-$(cat $VERSION).zip
 
 # Commands
 KERNEL_DIR=${BUILD_DIR}/linux-${KERNEL_VERSION}

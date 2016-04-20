@@ -1,8 +1,0 @@
-config BR2_PACKAGE_WPTDM
-	bool "wptdm"
-	select BR2_PACKAGE_OPENSSL
-	select BR2_PACKAGE_LIBCURL
-	help
-	  Remote management client
-	  
-	  http://outernet.is/

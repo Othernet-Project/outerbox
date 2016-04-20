@@ -23,11 +23,15 @@ LOSETUP="/busybox losetup"
 SWITCH_ROOT="/busybox switch_root"
 SH="/busybox sh"
 SLEEP="/busybox sleep"
+TEE="/busybox tee"
+SYNC="/busybox sync"
 
 BOOTLOG="/bootlog.txt"
 
+echo > $BOOTLOG
+
 log() {
-    echo "$1" >> $BOOTLOG
+    echo "$1" | /busybox/tee -a $BOOTLOG
 }
 
 # Mount devtmpfs for nodes
@@ -53,7 +57,8 @@ do
 done
 
 log "Mounting SD card"
-$MOUNT -t vfat -o utf8,uid=1000 /dev/mmcblk0p1 /sdcard >> $BOOTLOG 2>&1
+$MOUNT -t vfat -o utf8,uid=1000,errors=continue /dev/mmcblk0p1 /sdcard \
+    >> $BOOTLOG 2>&1
 
 # Move bootlog to SD card
 $MV /bootlog.txt /sdcard/bootlog.txt
@@ -76,6 +81,8 @@ $MOVE /dev /root/dev
 $MOVE /tmpfs /root/mnt/tmpfs
 $MOVE /rootfs /root/mnt/rootfs
 $MOVE /rootfs /root/mnt/sdcard
+
+$SYNC
 
 log "Switching root"
 exec $SWITCH_ROOT /root /sbin/init
