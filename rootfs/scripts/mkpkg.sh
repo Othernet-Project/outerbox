@@ -34,7 +34,10 @@ INIT_LIST_OUT=${INIT_DIR}/init.ramfs
 # Commands
 KERNEL_DIR=${BUILD_DIR}/linux-${KERNEL_VERSION}
 GENCPIO=${KERNEL_DIR}/usr/gen_init_cpio
-MKIMAGE=${KERNEL_DIR}/mkbootimg
+MKIMAGE="$(which mkbootimg)"
+if [ -z "$MKIMAGE" ]; then
+  MKIMAGE="${KERNEL_DIR}/mkbootimg"
+fi
 MKPKG=${HOST_DIR}/usr/bin/mkpkg
 
 # Sanity check
